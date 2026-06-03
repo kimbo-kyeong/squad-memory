@@ -1,6 +1,11 @@
 # All files excluded by default — safelist only what should reach GitHub
 *
 
-# Whitelist: gitignore itself and squad memory files used by the n8n assistant
+# Whitelist: gitignore itself and squad memory files used by the n8n assistant.
+# squad_career.md (v1) is deprecated; squad_career_v2.md is the latest and the
+# only career memory shipped to the assistant.
 !.gitignore
-!squad_*.md
+!squad_career_v2.md
+!squad_growth.md
+!squad_learning_experience.md
+!squad_learning_management.md
