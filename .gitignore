@@ -1,0 +1,6 @@
+# All files excluded by default — safelist only what should reach GitHub
+*
+
+# Whitelist: gitignore itself and squad memory files used by the n8n assistant
+!.gitignore
+!squad_*.md
