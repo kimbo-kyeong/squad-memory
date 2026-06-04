@@ -31,7 +31,7 @@ originSessionId: d6709893-5f88-480e-9382-86da0d712d4b
   - UNION ALL 누적 행 → 컬럼 변경 사유: SQL 클라이언트가 NULL/빈값 섞인 varchar 컬럼을 epoch ms로 변환하는 이슈
   - 다구매율 1.16 (4,645 유저 → 5,369 (user, product), 16% 매출 정합 영향)
 - **상세 시트** = user 단위 발생 기준 — 주차별 트렌드 비교, segment 분리 (40대/TOP5)
-- **결제완료** = amplitude `sc_payment_purchase_completed` (이벤트명 검증 필요), DB `order_fin_at`은 검증 컬럼으로 끝에 노출
+- **결제완료** = amplitude `sc_payment_purchase_completed` (결제 성공 로그), DB `order_fin_at`은 검증 컬럼으로 끝에 노출
 - **카드조회** = amplitude 이벤트엔 product_id 없어 user-level 귀속 → 다구매자는 product 수만큼 + (참고용)
 
 ## 주차 기준
