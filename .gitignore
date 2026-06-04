@@ -2,10 +2,11 @@
 *
 
 # Whitelist: gitignore itself and squad memory files used by the n8n assistant.
-# squad_career.md (v1) is deprecated; squad_career_v2.md is the latest and the
-# only career memory shipped to the assistant.
+# squad_career.md (v1) is deprecated; squad_career_v2.md is the latest.
+# squad_growth.md was split into KDC/KDT files for clarity.
 !.gitignore
 !squad_career_v2.md
-!squad_growth.md
+!squad_growth_kdc.md
+!squad_growth_kdt.md
 !squad_learning_experience.md
 !squad_learning_management.md
