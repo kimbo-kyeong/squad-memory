@@ -52,6 +52,25 @@ metadata:
 - 임박(D-14 이내) 자사 운영 영역 모집 = 광고 경쟁 심화 신호
 - 경쟁사 분석 강조점: ① 강세 기관 변동(Top5 순위 변화) ② 신규 진입 기관 ③ 자사 인접 영역으로 진입한 기관(영역 확장 신호)
 
+### 자사 트랙명 ⇄ 그로스KDT_목표 시트 별칭 매핑 (2026-06-22 확정)
+그로스KDT_목표 시트와 그로스KDT상세_raw의 트랙명이 다른 경우가 있음. Code 노드에서 alias로 매칭.
+
+| 자사 track_category (상세_raw) | 시트 A열 (목표) |
+|------------------|----|
+| advanced_java | advanced_java |
+| ai_designer | ai_designer |
+| back_kotlin | back_kotlin |
+| data | data |
+| data_pm | pm |
+| data_qaqc | qaqc |
+| digital_marketer | digital_marketer |
+| game_unreal | unreal |
+| spring | spring |
+| uxui | uxui |
+| ios_starter | flutter_app |
+
+매칭 시 공백·언더스코어·대소문자 정규화하여 비교.
+
 ### 자사 트랙 ⇄ 경쟁사 강의명 키워드 매핑 (2026-06-18 추가)
 위클리 메시지 [2] 경쟁사 비교에서 자사 트랙별로 유사 커리큘럼·동기간 경쟁사를 추출할 때 사용.
 경쟁사 시트 `course_name`에 다음 키워드 중 하나라도 포함되면 같은 트랙으로 간주.
