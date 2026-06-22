@@ -180,8 +180,48 @@ metadata:
 
 ---
 
+## 데일리 모니터링 운영 (2026-06-22 추가)
+
+n8n 워크플로우로 매일 자동 발송. 그로스 스쿼드의 데일리 의사결정 baseline.
+
+### 발송
+- **시각**: 매일 09:30 KST (Schedule Trigger)
+- **채널**: #스쿼드_그로스_전체
+- **멘션**: `<@U05HP5T7YUB>` (DA)
+
+### 메시지 구조 (5블록)
+1. 멘션 (context, 작은 회색)
+2. 본문 — 헤더 + KPI 표 (5세그먼트 × 직전 4주 같은 D+N 평균 대비)
+3. 차트 이미지 (주차별 추이)
+4. 에이전트 가설 — `[1] 요약` / `[2] 변화` / `[3] 가설`
+5. 시트 링크 (상세 데이터 보러가기 →)
+
+### 노드 구조 (7개)
+Schedule Trigger → Google Sheets (`KDC DN Sheet`, **Execute Once ON**) → GitHub Memory Fetch → Code → HTTP Request1 (QuickChart short URL) → Anthropic → Code2 → Slack Webhook
+
+### LLM
+- Model: `claude-haiku-4-5-20251001`
+- 패턴: System role 없이 User 단일 메시지에 systemPrompt + 데이터 통합 (`llm_combined`)
+- 마감 모드 분기: D+max = 직전 주차 회고 모드
+
+### 핵심 해석 규칙 (메시지에 반영 중)
+- KPI = `결제시작→등록_kpi_누적(%)` — D+N 누적, 같은 D+N 시점 직전 4주 평균 대비 비교가 본질
+- 진행중 주차 KPI는 D+N 증가에 따라 자연 감소 → 절대값 비교 금지
+- 4주 평균 기준선에 22W 신규 4종 출시 효과 포함 → 23W 이후 떨어진 게 일부는 정상화일 수 있음
+
+### 데이터 소스
+- 시트: `KDC DN Sheet` (Google Sheet ID `1uQHwyclXX8BeIXpoJhCoPOoPwzYzcfTCyWXCY3hFIbI`, gid=161866524)
+- KPI 컬럼: `결제시작→등록_kpi_누적(%)`
+- 세그먼트: 전체 / 40대이상 / 40대미만 / TOP5 / 비TOP5
+
+### 구현 가이드
+`/Users/bokyeongkim/claudedocs/n8n_kdc_code_node.md` — Code 노드 전체 코드 + 노드 설정 + 트러블슈팅
+
+---
+
 ## 관련 메모리
 - kdc_revenue_calculation.md: 매출 계산 상세 (수료율 연동 환급금)
 - kdc_learning_segment_trends.md: 수경스 학습 단계 관점 (그로스 단계와 시점 다름. 직접 인용 시 혼란 주의)
 - kdc_werl_kpi_framework.md: WERL KPI 체계 (수강경험 스쿼드와 연계)
 - squad_learning_experience.md: 수강경험 스쿼드의 KDC 관점
+- squad_growth_kdt.md: 자매 사업 KDT (위클리 모니터링 운영 정보 포함)

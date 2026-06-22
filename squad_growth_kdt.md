@@ -145,5 +145,67 @@ metadata:
 
 ---
 
+## 위클리 모니터링 운영 (2026-06-22 추가)
+
+n8n 워크플로우로 주 2회 자동 발송. 그로스 스쿼드의 위클리 의사결정 baseline.
+
+### 발송
+- **시각**: 월 10:15 KST (한 주 시작 현황), 금 16:15 KST (한 주 활동 결과)
+- **채널**: #스쿼드_그로스_전체
+- **멘션**: `<!subteam^S09DNDC41UY> <!subteam^S08PZD44NBD> cc. <@U039N2Z8QDD> <@U05HP5T7YUB>`
+
+### 메시지 구조 (8블록)
+1. 헤더 (`🎯 KDT 그로스 위클리 (NW)`)
+2. 멘션 (context)
+3. 누적 매출 백그라운드 ("현재 모집중 N개 트랙 누적 매출 X억")
+4. `[1] 자사 트랙 진행도` — 모집중 회차별 목표 도달률·기간 경과·페이스·D-N
+5. 차트 이미지 (stacked bar — 등록 vs 잔여, 목표 datalabels)
+6. `[2] 동기간 경쟁사 비교` — 트랙별 키워드 매칭·개강 ±1개월 윈도우·평균 정원·평균 등록률·분포
+7. `[3] 종합 가설` — 트랙당 헤더(직전 회차 같은 모집상대주차 비교) + 번호 3개 (현재 분석 / 직전 비교 / 경쟁사 컨텍스트)
+8. 시트 링크 (상세 데이터 보러가기 →)
+
+### 데이터 소스
+- 그로스KDT상세_raw — 트랙 × 회차 × 모집상대주차 (메인 분석)
+- 그로스KDT_raw — ISO week 백그라운드 (매출 누적용)
+- 경쟁사_raw — KDT 시장 (HRD-Net `hrd_training_courses_mart_v2`, 자사 운영 NCS 영역)
+- 그로스KDT_목표 — 트랙별·회차별 목표 (S열 "예상 최종확정")
+- squad_growth_kdt.md (GitHub raw fetch) — 어시스턴트 컨텍스트
+
+### 노드 구조 (10개)
+Schedule Trigger → Sheets 4개 → GitHub Memory Fetch → Code (집계·chart_config·llm_combined) → HTTP Request1 (QuickChart short URL) → Anthropic → Code2 (Slack Block Kit + 들여쓰기 후처리) → Slack Webhook
+
+### LLM
+- Model: `claude-haiku-4-5-20251001`
+- Max tokens: **1800** (한국어 1자 ≈ 1.7토큰, 가설 약 900자 × 1.7 ≈ 1500 + 여유)
+- 출력 형식: 순수 JSON `{ "hypothesis": "..." }` — 코드 펜스 금지
+- 가설 구조: 트랙당 헤더 1줄 + 번호 3개 서브라인 (액션·전체 추세 블록 X)
+- 파싱 fallback 4단계: 코드 펜스 → greedy JSON → 정규식 `"hypothesis": "..."` 직접 추출 → raw 텍스트
+
+### 핵심 해석 규칙 (메시지에 반영 중)
+- 페이스 = 목표 도달률(등록/목표) − 모집 기간 경과율 (선형 가정)
+- 페이스 상태: ≥+5 앞섬 / -10～+5 정상 / <-10 부진
+- 직전 회차 비교 우선순위: 같은 모집상대주차 → 직전 회차 최종 누적 fallback
+- 액션·전체 추세 블록 만들지 않음 (액션은 위클리 미팅에서 결정)
+- 슬랙 가독성: `- ` 헤더 prefix + ` ` 4개 들여쓰기 (Code2 후처리)
+
+### FAQ — 자주 받는 질문
+
+**Q. 타사 정원과 자사 모집 목표를 같은 분모로 보고 비교 가능?**
+A. 직접 비교 불가. 분모·시점·샘플 3가지가 다름.
+- **분모 차이**: 자사 도달률 = 등록/그로스 목표(비즈니스 KPI), 타사 등록률 = 등록/HRD-Net 신고 정원(운영 가능 최대치). 일반적으로 정원이 비즈니스 목표보다 큰 경향이라 같은 분모로 보면 자사가 실제보다 잘하는 것처럼 보임
+- **시점 차이**: 타사는 모집 시작일 정보가 없어서 "개강 ±1개월" 윈도우로 잡아 모집중·개강 후가 섞임. 등록률 분포 0%～100%로 양극화되는 원인
+- **샘플 차이**: 자사 1개 회차 vs 타사 N개 평균. 분포 넓으면 평균 의미 약함
+- **결론**: 타사 평균은 시장 분위기 참고용으로만, 자사 잘했는지는 [3]의 직전 회차 같은 시점 비교로 판단
+
+### 구현 가이드
+- `/Users/bokyeongkim/claudedocs/n8n_kdt_code_node.md` — Code·Code2·Anthropic 전체 + Schedule Trigger + 트러블슈팅
+- `/Users/bokyeongkim/claudedocs/n8n_kdt_competitor_sheet.md` — 경쟁사 시트 SQL
+
+### 시트
+- Google Sheet ID: `1uQHwyclXX8BeIXpoJhCoPOoPwzYzcfTCyWXCY3hFIbI`
+- 메시지 시트 링크 탭: `상세_raw` (gid=1914977197)
+
+---
+
 ## 관련 메모리
-- squad_growth_kdc.md: 그로스 KDC (자매 사업, 국비지원 비드유 단가형. KDT와 단가·기간·환불 구조 다름)
+- squad_growth_kdc.md: 그로스 KDC (자매 사업, 국비지원 비드유 단가형. KDT와 단가·기간·환불 구조 다름. 데일리 모니터링 운영 정보 포함)
