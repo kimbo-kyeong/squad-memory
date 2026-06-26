@@ -17,7 +17,7 @@ originSessionId: 94377727-a791-4869-a178-b12b609f41cf
 - target_graduates (696명) = 2026 수료 + dropout_reason IN ('정상수료','80%이상수료') + hrd_category='실업자'
 - eligible_users (~609명) = target_graduates ∩ career_visitors (crr_%_view 1회+)
 - 모든 행동 메트릭 → eligible_users 모수에서만 카운트
-- ⚠️ 취업솔루션 파트(2026-06~)는 WAU를 '대상자 대비 비율(%)'로 재정의(코호트 기준 WAU비율=위클리리텐션, 수료후 1개월 평균). 본 v2 시트의 WAU(명/윈도우풀 21%)와는 별개 지표. [[squad_career_employment_2d5d]]
+- ⚠️ 취업솔루션 파트(2026-06~)는 WAU를 '대상자 대비 비율(%)'로 재정의(코호트 기준 WAU비율=위클리리텐션, 수료후 1개월 평균). 본 v2 시트의 WAU(명/윈도우풀 21%)와는 별개 지표. [[squad_career_employment]]
 
 ## 핵심 정책 결정사항
 
