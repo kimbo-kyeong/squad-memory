@@ -1,6 +1,6 @@
 ---
 name: squad_learning_experience
-description: 수강경험 스쿼드 지표 체계 - Metric Tree, KPI 정의, DA 검증 현황, 데이터 원천 확정 (2026-04-15 쿼리 구현 완료 기준)
+description: "교육솔루션 파트 - 온라인 (구 수강경험 스쿼드) 지표 체계 - Metric Tree, KPI 정의, DA 검증 현황, 데이터 원천 확정 (2026-04-15 쿼리 구현 완료 기준). 2026 하반기 조직 개편으로 교육솔루션 파트로 재편"
 type: project
 originSessionId: 641ff182-6322-489a-a68b-97f56cbe1961
 ---

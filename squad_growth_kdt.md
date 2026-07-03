@@ -1,6 +1,6 @@
 ---
 name: squad_growth_kdt
-description: 그로스 KDT 메모리 - 내일배움캠프 부트캠프 모집·세일즈·등록 KPI + 어시스턴트 컨텍스트
+description: "구매전환 파트 - KDT (구 그로스 KDT) - 내일배움캠프 부트캠프 모집·세일즈·등록 KPI + 어시스턴트 컨텍스트. 2026 하반기 조직 개편으로 구매전환 파트로 재편"
 metadata: 
   node_type: memory
   type: project
@@ -12,7 +12,10 @@ metadata:
   originSessionId: 82a18ae3-066b-4c7d-a17f-ee9a9ce1d3dd
 ---
 
-# 그로스 KDT
+# 구매전환 파트 - KDT (구 그로스 KDT)
+
+> 2026 하반기 조직 개편 - 그로스 스쿼드 → 구매전환 파트. KDC/KDT는 파트의 하위 사업 단위.
+> 사용자 발화에서 "그로스 KDT" 언급 시 구매전환 파트 - KDT로 매핑.
 
 ## 어시스턴트 컨텍스트
 

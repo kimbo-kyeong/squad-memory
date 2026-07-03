@@ -1,6 +1,6 @@
 ---
 name: squad_growth_kdc
-description: "그로스 KDC 메모리 - 국비지원 시니어 AI 교육 사업, KPI·도메인 컨텍스트·어시스턴트 컨텍스트"
+description: "구매전환 파트 - KDC (구 그로스 KDC) - 국비지원 시니어 AI 교육 사업, KPI·도메인 컨텍스트·어시스턴트 컨텍스트. 2026 하반기 조직 개편으로 구매전환 파트로 재편"
 metadata: 
   node_type: memory
   type: project
@@ -14,7 +14,10 @@ metadata:
   originSessionId: 82a18ae3-066b-4c7d-a17f-ee9a9ce1d3dd
 ---
 
-# 그로스 KDC
+# 구매전환 파트 - KDC (구 그로스 KDC)
+
+> 2026 하반기 조직 개편 - 그로스 스쿼드 → 구매전환 파트. KDC/KDT는 파트의 하위 사업 단위.
+> 사용자 발화에서 "그로스 KDC" 언급 시 구매전환 파트 - KDC로 매핑.
 
 ## 어시스턴트 컨텍스트
 
