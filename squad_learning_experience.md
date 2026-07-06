@@ -258,7 +258,7 @@ KDC 수료율 90%
   - ★관측주차 이관 검토했으나 기각: 실습 미착수율은 stock(누적 상태) 지표라 flow(학습유저비율)와 달리 관측주차가 부적합(신규 유입 구성 왜곡 발생). 성숙도 왜곡은 "1챕터 도래 게이트"로 해결(관측주차 아님). 개강 코호트 기준 유지(수료율 계열).
   - **미착수** = 그중 `projects_done=0`. ★핵심: 1챕터 실습 lesson_id 직접 매칭은 **v1/v2 바인딩**([[kdc_completion_vs_practice]])서 옛 커리큘럼 수강생 오분류 → 대신 게이트 구조(건너뛰기 불가)상 **projects_done=0 = 1챕터 실습 미통과**를 이용(버전 무관·정확).
 - 구현: `ch1_project_products` CTE 추가 + product_progress/cohort_progress에 `LEFT JOIN ch1_project_products c1p` + `prj_target_cnt`(c1p 매칭)·`prj_zero_cnt`(c1p AND projects_done=0). 분모 total_students→prj_target_cnt. 통합·상세 **양쪽 다** 반영. (ppc.total_projects 방식은 폐기)
-- 참고 수치(any-실습 버전, 2026 5,361명): 실습없는과목 76명 old서 오분류, old 19.3%→18.1%. **ch1 버전 최종 수치는 B(Redash/psql) 검증 대기**(MCP Data API가 대형 쿼리 후 "transaction is read-only"로 stuck, redshift_sql_gotchas §7).
+- **검증 완료(2026-07-06, Redash 실행)**: 통합·상세 **양쪽 다** 반영 확인. 개강 7일 안 지난 코호트(예: 27W 06-30개강 6일차)는 실습 대상=0·미착수율=공란으로 정확히 보류, 26W 이하는 정상 평가(게이트 영향 없음). 시작자 필터 효과: 최근 코호트일수록 미착수율 크게 하락(24W 0.213→0.138, 26W 0.382→0.252). MCP Data API는 대형 쿼리 후 "transaction is read-only" stuck이라 검증은 Redash/psql로 수행(redshift_sql_gotchas §7). 참고: any-실습 초기버전 old 19.3%→18.1%.
 
 ## 쿼리 구현 시 확인된 사항 (2026-04-13~15)
 
