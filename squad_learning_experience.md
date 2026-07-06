@@ -251,12 +251,13 @@ KDC 수료율 90%
 - caveat: 개강 없는 주(설연휴 등)는 통합에도 행이 없어 트렌드 구멍 / 이번주 개강 코호트는 상태=진행중(부분치, 주 끝나면 상승). 진행중 주 과소평가는 주간지표 숙명.
 - 실제 트렌드: 완료된 주 대체로 72~80% 밴드(steady 학습참여). "이번주 40%"는 진행중 부분치 착시였음.
 
-**② 실습 미착수율 모수 변경: 전체 수강생 → 실습 대상자**
-- 배경: 챕터 끝마다 실습 있는 구조인데 **실습 없는 과목/챕터도 생김** → 실습 없으면 projects_done=0이라 old 기준(÷전체)서 전원 "미착수"로 오분류.
-- 변경: 미착수율 = 실습 0건 / **실습 대상 수강생**. 실습 대상 = 최신 커리큘럼에 실습(PROJECT) 1개+ 존재하는 과목 수강생(`product_project_count.total_projects>0`).
-- 구현: product_progress/cohort_progress에 `prj_target_cnt` 추가, 분모를 total_students→prj_target_cnt. 통합·상세 **양쪽 다** 반영.
-- 검증(2026 코호트 5,361명): 실습없는과목 76명(1.4%) 전원이 old서 미착수 오분류됐었음. old 19.3% → new 18.1%.
-- ⚠️ MCP(Redshift Data API)는 이 두 쿼리가 커서 통실행 시 "transaction is read-only" 에러 → 전체 검증은 Redash/psql로 (redshift_sql_gotchas §7).
+**② 실습 미착수율 = "1챕터(첫 챕터) 실습 미착수율"로 재정의** (모수도 변경)
+- 배경: 챕터 끝마다 실습 있는 구조인데 **1챕터에 실습 없는 과목도 생김**. 최종 정의(사용자 확정) = **1챕터 실습을 안 한 사람** 비율.
+- 정의: 미착수율 = 1챕터 실습 미착수 / **1챕터 실습 대상 수강생**.
+  - **모수** = 최신 커리큘럼 **1챕터에 실습(PROJECT)이 있는 과목** 수강생 (`ch1_project_products` = project_chapter_map WHERE chapter_week=1, 상품 단위 DISTINCT).
+  - **미착수** = 그중 `projects_done=0`. ★핵심: 1챕터 실습 lesson_id 직접 매칭은 **v1/v2 바인딩**([[kdc_completion_vs_practice]])서 옛 커리큘럼 수강생 오분류 → 대신 게이트 구조(건너뛰기 불가)상 **projects_done=0 = 1챕터 실습 미통과**를 이용(버전 무관·정확).
+- 구현: `ch1_project_products` CTE 추가 + product_progress/cohort_progress에 `LEFT JOIN ch1_project_products c1p` + `prj_target_cnt`(c1p 매칭)·`prj_zero_cnt`(c1p AND projects_done=0). 분모 total_students→prj_target_cnt. 통합·상세 **양쪽 다** 반영. (ppc.total_projects 방식은 폐기)
+- 참고 수치(any-실습 버전, 2026 5,361명): 실습없는과목 76명 old서 오분류, old 19.3%→18.1%. **ch1 버전 최종 수치는 B(Redash/psql) 검증 대기**(MCP Data API가 대형 쿼리 후 "transaction is read-only"로 stuck, redshift_sql_gotchas §7).
 
 ## 쿼리 구현 시 확인된 사항 (2026-04-13~15)
 
