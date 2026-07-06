@@ -254,7 +254,7 @@ KDC 수료율 90%
 **② 실습 미착수율 = "1챕터(첫 챕터) 실습 미착수율"로 재정의** (모수도 변경)
 - 배경: 챕터 끝마다 실습 있는 구조인데 **1챕터에 실습 없는 과목도 생김**. 최종 정의(사용자 확정) = **1챕터 실습을 안 한 사람** 비율.
 - 정의: 미착수율 = 1챕터 실습 미착수 / **1챕터 실습 대상 수강생**.
-  - **모수** = 최신 커리큘럼 **1챕터에 실습(PROJECT)이 있는 과목** 수강생 (`ch1_project_products` = project_chapter_map WHERE chapter_week=1, 상품 단위 DISTINCT).
+  - **모수** = 최신 커리큘럼 **1챕터에 실습(PROJECT)이 있는 과목** 수강생 (`ch1_project_products` = project_chapter_map WHERE chapter_week=1, 상품 단위 DISTINCT) **중 강의 시작자(진도>0)만** (`user_started` = 기간 내 레슨 1개+ 통과. 미시작 no-show 제외 — 2026-07-06 추가).
   - **미착수** = 그중 `projects_done=0`. ★핵심: 1챕터 실습 lesson_id 직접 매칭은 **v1/v2 바인딩**([[kdc_completion_vs_practice]])서 옛 커리큘럼 수강생 오분류 → 대신 게이트 구조(건너뛰기 불가)상 **projects_done=0 = 1챕터 실습 미통과**를 이용(버전 무관·정확).
 - 구현: `ch1_project_products` CTE 추가 + product_progress/cohort_progress에 `LEFT JOIN ch1_project_products c1p` + `prj_target_cnt`(c1p 매칭)·`prj_zero_cnt`(c1p AND projects_done=0). 분모 total_students→prj_target_cnt. 통합·상세 **양쪽 다** 반영. (ppc.total_projects 방식은 폐기)
 - 참고 수치(any-실습 버전, 2026 5,361명): 실습없는과목 76명 old서 오분류, old 19.3%→18.1%. **ch1 버전 최종 수치는 B(Redash/psql) 검증 대기**(MCP Data API가 대형 쿼리 후 "transaction is read-only"로 stuck, redshift_sql_gotchas §7).
