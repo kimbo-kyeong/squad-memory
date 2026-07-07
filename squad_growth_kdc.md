@@ -186,6 +186,16 @@ metadata:
 3. 퍼널 2단계 분해: 랜딩 CTA → 결제페이지 도달(`sc_payment_purchase_view`) → 완료. 현행 지표(결제페이지→완료)는 뒤 단계로 유지 → "결제창 오기 전 vs 와서" 이탈 분리 진단
 - 매칭: 분자 = 분모 페어집합 중 완료된 페어(같은 user·product가 CTA→완료). 갈아타기(A클릭·B결제)는 4% 안에서만, B결제 시 대개 B CTA도 거쳐 영향 작음
 
+**두 정의 (user, product) 페어 전환율 실측** (6월 클릭, 완료 6/1~7/7, business='kdcScc'):
+| 정의 | 분모 페어 | 분자(완료) | 전환율 | 완료 포착률 |
+|---|---:|---:|---:|---:|
+| A. 랜딩/국비신청 CTA → 완료 | 9,814 | 1,170 | 11.9% | 66.9% |
+| B. 결제페이지 결제하기 → 완료(현행) | 4,152 | 1,409 | 33.9% | 80.6% |
+- 전체 KDC 완료 페어 1,749 / 어느 CTA에도 매칭 안 됨 327(18.7%)
+- 결제하기 이벤트 주의: `sc_payment_button_click`은 button_text 두 종 — '내일배움카드로 49,000원 결제하기'(=결제시작, product_id·business 있음) vs '신용/체크카드-신한'(카드선택, product_id 없음). 결제시작은 전자만
+- **핵심 발견**: A(랜딩)는 전환율이 낮은 것(11.9 vs 33.9)보다, **실제 완료건을 더 많이 유실**(66.9% vs 80.6% 포착). ∵ 랜딩(spartaclub.kr, 로그인 전) ↔ 완료(academia.spartaclub.kr, 로그인 후) 도메인·로그인 경계에서 amplitude_id 스티칭 끊김. 상단으로 올릴수록 익명 구간↑ → 매칭 손실↑. fan-out(4.3%)보다 훨씬 큰 손실
+- **권장**: ①분자(완료)는 amplitude 페어매칭 아니라 주문 DB(`order_fin_at`)+user_id로 붙일 것(현행도 DB 검증 병행) ②랜딩 CTA는 "상단 퍼널 참고 지표", 운영 KPI는 결제페이지 기준 유지 + 퍼널 2단계 병행 ③랜딩 CTA를 정식 KPI화하려면 cross-domain/로그인 전후 identity 스티칭 선결
+
 **검증 조건**: sparta-warehouse 클러스터, warehouse DB, `amplitude.events_731525`, 6월(2026-06-01~06-30), amplitude_id 기준(비로그인 다수라 유저 스티칭 한계), 상세페이지 CTA는 url ILIKE '%/kdc/class/%' 필터
 
 ---
