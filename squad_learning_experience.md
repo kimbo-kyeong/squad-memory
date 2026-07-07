@@ -11,6 +11,8 @@ originSessionId: 641ff182-6322-489a-a68b-97f56cbe1961
 
 > **미션**: 온라인 강의를 통해 고객이 쉽고, 빠르게, 목표를 달성할 수 있도록
 > **담당 PM**: [PM-수경스] | **DA**: [DA]
+>
+> **관련 문서** : Weekly 시트 컬럼별 해석 가이드(구성원 공용) = [[lecture_online_weekly_metric_guide]] / 관측주차 학습유저비율 쿼리 로직 = [[lecture_luser_obsweek_logic]]
 
 ## 비즈니스 지표
 
