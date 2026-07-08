@@ -20,10 +20,10 @@ originSessionId: bf0b0828-ed19-48fe-982a-28f40756bf13
 
 | 파일 | 용도 |
 |------|------|
-| `claudedocs/learning/학관스_atani_weekly_dashboard.sql` | 주차별 지표한판 |
-| `claudedocs/learning/학관스_atani_daily_dau.sql` | 일별 DAU |
-| `claudedocs/learning/학관스_atani_지표_명세서.md` | PM 전달용 |
-| `claudedocs/learning/학관스_atani_사용패턴_분석.md` | 사용 패턴 분석 (chathistory 기반) |
+| `claudedocs/교육솔루션/learning/학관스_atani_weekly_dashboard.sql` | 주차별 지표한판 |
+| `claudedocs/교육솔루션/learning/학관스_atani_daily_dau.sql` | 일별 DAU |
+| `claudedocs/교육솔루션/learning/학관스_atani_지표_명세서.md` | PM 전달용 |
+| `claudedocs/교육솔루션/learning/학관스_atani_사용패턴_분석.md` | 사용 패턴 분석 (chathistory 기반) |
 
 ---
 
@@ -121,7 +121,7 @@ originSessionId: bf0b0828-ed19-48fe-982a-28f40756bf13
   - 누락 min: 4 msg / 41KB BSON (125건/4-5월)
   - 완전 분리됨 → Redshift VARCHAR(MAX) 65,535B 한계 또는 Hevo payload 제한 추정
 - **MongoDB 직접 검증**: 누락 50건 샘플 100% chatHistory 정상 존재
-- **보정 CTE 작성**: `claudedocs/learning/학관스_atani_hevo_보정_activity.sql`
+- **보정 CTE 작성**: `claudedocs/교육솔루션/learning/학관스_atani_hevo_보정_activity.sql`
   - 4-5월 125 세션 × 224 (session, kst_date) 행 (UNION ALL SELECT 형식)
   - 매월 1회 재추출 절차 파일 하단 주석
 - **보정 효과**: createdat fallback 103 user-days → 정확 보정 167 user-days (+62%)

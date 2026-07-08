@@ -9,11 +9,11 @@ originSessionId: 94377727-a791-4869-a178-b12b609f41cf
 > 2026 하반기 조직 개편 - 커리어 스쿼드 → 취업솔루션 파트.
 
 ## 파일 위치
-- v1 (제품실 KPI): `/Users/bokyeongkim/claudedocs/career/커리어_지표한판_weekly.sql`
-- v2 (스쿼드 weekly): `/Users/bokyeongkim/claudedocs/career/커리어_v2_스쿼드_weekly.sql`
-- 컬럼 가이드: `/Users/bokyeongkim/claudedocs/career/커리어_v2_컬럼_종합가이드.md`
-- 분포 분석: `/Users/bokyeongkim/claudedocs/career/커리어_재방문분포_분석.sql`
-- Cohort 분석: `/Users/bokyeongkim/claudedocs/career/커리어_cohort_분석.sql`
+- v1 (제품실 KPI): `/Users/bokyeongkim/claudedocs/취업솔루션/career/커리어_지표한판_weekly.sql`
+- v2 (스쿼드 weekly): `/Users/bokyeongkim/claudedocs/취업솔루션/career/커리어_v2_스쿼드_weekly.sql`
+- 컬럼 가이드: `/Users/bokyeongkim/claudedocs/취업솔루션/career/커리어_v2_컬럼_종합가이드.md`
+- 분포 분석: `/Users/bokyeongkim/claudedocs/취업솔루션/career/커리어_재방문분포_분석.sql`
+- Cohort 분석: `/Users/bokyeongkim/claudedocs/취업솔루션/career/커리어_cohort_분석.sql`
 
 ## 모수 정의 (v1, v2 공통)
 - target_graduates (696명) = 2026 수료 + dropout_reason IN ('정상수료','80%이상수료') + hrd_category='실업자'

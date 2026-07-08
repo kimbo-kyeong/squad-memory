@@ -255,7 +255,7 @@ Schedule Trigger → Google Sheets (`KDC DN Sheet`, **Execute Once ON**) → Git
 - 세그먼트: 전체 / 40대이상 / 40대미만 / TOP5 / 비TOP5
 
 ### 구현 가이드
-`/Users/bokyeongkim/claudedocs/n8n_kdc_code_node.md` — Code 노드 전체 코드 + 노드 설정 + 트러블슈팅
+`/Users/bokyeongkim/claudedocs/구매전환/n8n/n8n_kdc_code_node.md` — Code 노드 전체 코드 + 노드 설정 + 트러블슈팅
 
 ---
 

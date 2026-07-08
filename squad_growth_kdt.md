@@ -204,8 +204,8 @@ A. 직접 비교 불가. 분모·시점·샘플 3가지가 다름.
 - **결론**: 타사 평균은 시장 분위기 참고용으로만, 자사 잘했는지는 [3]의 직전 회차 같은 시점 비교로 판단
 
 ### 구현 가이드
-- `/Users/bokyeongkim/claudedocs/n8n_kdt_code_node.md` — Code·Code2·Anthropic 전체 + Schedule Trigger + 트러블슈팅
-- `/Users/bokyeongkim/claudedocs/n8n_kdt_competitor_sheet.md` — 경쟁사 시트 SQL
+- `/Users/bokyeongkim/claudedocs/구매전환/n8n/n8n_kdt_code_node.md` — Code·Code2·Anthropic 전체 + Schedule Trigger + 트러블슈팅
+- `/Users/bokyeongkim/claudedocs/구매전환/n8n/n8n_kdt_competitor_sheet.md` — 경쟁사 시트 SQL
 
 ### 시트
 - Google Sheet ID: `1uQHwyclXX8BeIXpoJhCoPOoPwzYzcfTCyWXCY3hFIbI`
