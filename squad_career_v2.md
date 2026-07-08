@@ -11,6 +11,16 @@ originSessionId: 94377727-a791-4869-a178-b12b609f41cf
 ## 파일 위치
 - v1 (제품실 KPI): `/Users/bokyeongkim/claudedocs/취업솔루션/career/커리어_지표한판_weekly.sql`
 - v2 (스쿼드 weekly): `/Users/bokyeongkim/claudedocs/취업솔루션/career/커리어_v2_스쿼드_weekly.sql`
+- **[2026-07-08 신규] 유형그룹별 버전 2종** (4챕터 대상 6트랙을 2D/5D 그룹 + 나머지로 분리, 유형별 차등 윈도우):
+  - `커리어_v2_스쿼드_weekly_그룹별.sql` (3섹터 51지표 + 유형그룹 컬럼)
+  - `커리어_지표한판_weekly_그룹별.sql` (16지표 + 유형그룹 컬럼)
+  - 구조: 1행 = 1주차 × 유형그룹(2D/5D/나머지). "유형그룹" 컬럼을 주시작일 뒤 삽입, 지표 컬럼 순서는 원본 동일.
+  - 대상 6트랙(tgt_map, tk+회차) : 2D=디지털마케팅4·Unreal7·QA5 / 5D=그래픽4·PM6·실시간커머스4. 그 외 전체=나머지.
+  - **유형별 차등 활동 윈도우** : 2D=수료2일전, 5D=수료5일전 ~ 둘 다 +180일. 나머지 하한은 원본 유지(v2=-14 / 한판=수료당일0), 상한은 둘 다 +180로 통일.
+  - ⚠️ 대상 6트랙 전부 7~8월 수료 예정 → 수료 전까지 2D/5D 그룹은 빈 상태, 수료 시작 시 track_name→(tk,회차) 파싱으로 자동 태깅(파싱 검증 완료 2026-07-08).
+  - ⚠️ 한판 코호트 전환율 3종(첫방문→재방문/프로필→완성/PASS→공고)도 +180 윈도우 내 집계 → 180일 초과 후 전환은 제외됨.
+  - ※ MCP redshift 세션은 amplitude 대량스캔+다중 self-join에서 'transaction is read-only'로 전체 실행이 막힘(SELECT 1 핑 후 경량버전만 통과). 전체는 시트/psql 등 read-write 클라이언트에서 실행. 트랙별 지표 쿼리는 미변경(원본 유지).
+  - 트랙 매핑은 [[squad_career_employment]] §MAP·§⑤와 동일 기준.
 - 컬럼 가이드: `/Users/bokyeongkim/claudedocs/취업솔루션/career/커리어_v2_컬럼_종합가이드.md`
 - 분포 분석: `/Users/bokyeongkim/claudedocs/취업솔루션/career/커리어_재방문분포_분석.sql`
 - Cohort 분석: `/Users/bokyeongkim/claudedocs/취업솔루션/career/커리어_cohort_분석.sql`
