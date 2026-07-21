@@ -12,7 +12,7 @@ metadata:
   segments: 전체 / 40대이상 / 40대미만 / TOP5 / 비TOP5
   주차_기준: 화~월 (개강일 기준)
   originSessionId: 82a18ae3-066b-4c7d-a17f-ee9a9ce1d3dd
-  modified: 2026-07-21T01:33:20.873Z
+  modified: 2026-07-21T02:26:43.100Z
 ---
 
 # 구매전환 파트 - KDC (구 그로스 KDC)
@@ -217,12 +217,18 @@ metadata:
 | `그로스_KDC_과목별_퍼널.sql` | 그로스 상세 시트 KDC | 발생 기준 weekly |
 | 정의서 | `그로스_KDC_KPI시트_정의서.md`, `그로스_지표_정의서.md` | 컬럼·기준 정의 |
 
-### 2026-07 전환 기준 변경 구현 (결제하기 클릭→완료 ⇒ 리드→완료)
-**설계 원칙: 기존 컬럼 위치·값 고정, 신규는 전부 뒤에 덧붙이기 (하이브리드).** 예전값·새값 한 시트 병렬 비교 가능.
-- `그로스_KDC_KPI시트.sql`: 신규 CTE 5개(`mart_lead_pairs` (user,product) dedup → `mart_lead_labeled` 화~월 라벨 → `mart_lead_agg` 주차집계 → `mart_leadtime` 분위수 → `mart_total_scalar` 누적) + 최종 SELECT 뒤 신규 컬럼 20~35(리드/결제/선발/등록 페어수, 리드→결제 KPI, 퍼널 분할, 리드타임 3, 누적 4) + `LEFT JOIN` 2개(주차 유일키라 기존 행/값 불변). 기존 CTE·컬럼 1~19 무수정
-- `그로스_KDC_과목별_퍼널.sql`: `all_events`에 마트 `lead_fin` 스텝 UNION 추가(`order_fin_db` 스텝과 동일 구조) + `agg`에 `리드_마트` + 최종 SELECT 뒤 `리드_마트`·`리드→결제완료_마트(%)`(=결제완료_db검증/리드_마트, 둘 다 마트) 추가. 기존 컬럼 무수정
-- 리드타임: 마트 `lead_to_order_hour` 컬럼(선존재) 사용. `PERCENTILE_CONT WITHIN GROUP OVER(PARTITION BY 주차)` + DISTINCT로 1행/주차
-- 검증: 마트 월별 리드→결제 재현 노션 목표표와 방향 일치(2026-01 26.9%/06 29.2%), 주차별 24.7~31.2%(목표 29%↑ 범위)
+### 2026-07 전환 기준 변경 구현 (결제시작 클릭 → 리드, **전체 교체**)
+**설계 원칙: 결제시작을 리드로 완전 교체. 컬럼 위치 고정, 값만 교체 (하이브리드 아님 — 처음엔 하이브리드로 짰다가 사용자 요청으로 교체 방식 재작업).**
+- **코호트 기준**: 첫 결제시작 주차 → **첫 리드 주차**(mart `lead_fin_at`, (user,product) dedup, 화~월)
+- `그로스_KDC_KPI시트.sql` (전체 재작성): 리드 코호트를 `mart_lead_pairs`로 만들고 amp_card(6,7)·amp_completed_up(12)·db_user_product(8,9,10) 조인. 컬럼 매핑(위치 고정, 이름/값 교체):
+  - 5 결제시작_수→**리드_수** / 13·17 누적_결제시작→**누적_리드**
+  - **8 결제완료: amp→mart `order_fin_at`** (KPI 분자) / **12: mart→amp검증**(`결제완료_amp검증`)으로 반전
+  - 뒤에 추가(20~24): 결제→선발·선발→등록 전환율 + 리드→결제 리드타임 p25/중앙값/p75(`lead_to_order_hour`)
+  - ps_ranked/ps_first 등 앰플 결제시작 CTE 제거
+- `그로스_KDC_과목별_퍼널.sql`: `payment_start` 스텝 제거, `lead_fin`(mart) 스텝으로 대체. 컬럼 `결제시작`→`리드`, `결제완료`=mart(order_fin), 검증=`결제완료_amp검증`(amp). 전환율 결제시작→리드로 rename. 중복 리드_마트 제거
+- **⚠ 결제완료를 mart로 바꾼 이유**: amp 결제완료는 리드페이지(로그인 전 도메인) identity 스티칭 끊겨 ~15% 과소(28W amp 354 vs mart 417). mart라야 리드→결제 KPI가 노션 목표(~29%)와 일치. [[hackle_variant_warehouse_gap]] 유형의 스티칭 이슈
+- 검증(마트 코호트): 리드→결제 24W 25.6%/26W 31.2%/28W 28.4% (노션 목표표 일치). 상세는 발생기준 참고용(28W 전체 33.2%)
+- ⚠ MCP redshift 계정 read-only라 대량 GROUPING SETS+amp 쿼리는 임시테이블 spill로 실행 막힘 → 조각 검증. 운영 BI 클라이언트는 정상
 - **n8n 데일리 모니터링은 이번 미변경**(사용자 선택). 다음: 코드노드·구글시트 KPI 컬럼(`결제시작→등록` → `리드→결제`) 반영 필요
 
 ### KDC 상세 시트 설계 (2026-04-23 신규)
